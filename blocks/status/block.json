@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "bukas-hours/status",
+	"version": "1.0.0",
+	"title": "Bukas Hours",
+	"category": "widgets",
+	"icon": "clock",
+	"description": "Shows your live open/closed badge, weekly hours and upcoming holiday closures.",
+	"keywords": [ "hours", "open", "schedule", "holiday" ],
+	"textdomain": "bukas-hours",
+	"attributes": {
+		"show": {
+			"type": "string",
+			"enum": [ "status", "hours", "both", "all" ],
+			"default": "both"
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide" ],
+		"spacing": { "margin": true, "padding": true },
+		"color": { "background": true, "text": true }
+	},
+	"editorScript": "file:./index.js"
+}

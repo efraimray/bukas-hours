@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Showcase · Bukas Hours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: shop-door signage hero, then a split "your website / wp-admin" demo bench driven by one time-travel clock. */
+:root{
+  --bg:#f2f5f1; --surface:#ffffff; --sunk:#e6ebe4; --ink:#16221b; --muted:#5a6b60; --line:#d3dccf;
+  --accent:#0f7b4e; --accent-ink:#ffffff; --open:#0f7b4e; --soon:#b8690a; --closed:#c0352a;
+  --wood:#6b4a2e; --sign:#fffdf6; --wp:#1d2327; --wp-ink:#f0f0f1; --today:#0f7b4e14;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1411; --surface:#151f1a; --sunk:#1c2822; --ink:#e7efe9; --muted:#9db0a4; --line:#2a3a31;
+  --accent:#3ccf8e; --accent-ink:#06130c; --open:#3ccf8e; --soon:#f0a43a; --closed:#ff7a6b;
+  --wood:#3a2a1c; --sign:#f4efe0; --wp:#0a0f0d; --wp-ink:#e7efe9; --today:#3ccf8e1c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1411; --surface:#151f1a; --sunk:#1c2822; --ink:#e7efe9; --muted:#9db0a4; --line:#2a3a31;
+  --accent:#3ccf8e; --accent-ink:#06130c; --open:#3ccf8e; --soon:#f0a43a; --closed:#ff7a6b;
+  --wood:#3a2a1c; --sign:#f4efe0; --wp:#0a0f0d; --wp-ink:#e7efe9; --today:#3ccf8e1c; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3.2vw,2.25rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+code,kbd,.mono{font-family:var(--mono);font-size:.86em}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:.5em;border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:.6em 1.05em;border-radius:999px;font-weight:700;text-decoration:none;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.small{padding:.35em .8em;font-size:.86rem;border-width:1px}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.15rem}
+.brand svg{flex:none}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:.2em .65em;color:var(--muted)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr .9fr;gap:40px;align-items:center;padding-block:28px 48px}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:800;letter-spacing:-.025em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{font-size:1.14rem;color:var(--muted);max-width:56ch;margin-top:18px}
+.hero .ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.gloss{margin-top:22px;font-size:.9rem;color:var(--muted)}
+.gloss b{font-family:var(--display);color:var(--ink)}
+
+/* door sign */
+.door{position:relative;display:grid;place-items:center;padding-top:10px;min-width:0}
+.door .nail{width:14px;height:14px;border-radius:50%;background:var(--muted);position:relative;z-index:2}
+.door .strings{width:200px;max-width:70%;height:60px;margin-top:-7px}
+.door .strings path{stroke:var(--muted);stroke-width:2;fill:none}
+.signbox{perspective:900px;margin-top:-4px;width:min(320px,100%)}
+.sign{position:relative;aspect-ratio:16/10;max-width:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.5,-0.3,.3,1.4);transform-origin:50% 0;animation:sway 5s ease-in-out infinite}
+.sign.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;background:var(--sign);border:6px solid var(--wood);display:grid;place-items:center;text-align:center;box-shadow:0 18px 30px -18px #0007;padding:10px}
+.face.back{transform:rotateY(180deg)}
+.face .big{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,7vw,3.6rem);letter-spacing:.02em;line-height:1}
+.face.front .big{color:#0f7b4e}
+.face.back .big{color:#c0352a}
+.face .small{font-family:var(--mono);font-size:.75rem;color:#4a4a40;margin-top:6px}
+@keyframes sway{0%,100%{rotate:-1.2deg}50%{rotate:1.2deg}}
+.signcap{margin-top:16px;font-size:.88rem;color:var(--muted);text-align:center;max-width:32ch}
+
+/* clock bar */
+.clock{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-block:1px solid var(--line)}
+.clock .wrap{display:flex;gap:14px 20px;align-items:center;flex-wrap:wrap;padding-block:12px}
+.clock .now{display:flex;flex-direction:column;min-width:0}
+.clock .now strong{font-family:var(--display);font-size:1.15rem;font-variant-numeric:tabular-nums}
+.clock .ctrls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1;min-width:0}
+.clock input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
+.clock input[type=date]{font:inherit;font-size:.9rem;padding:.3em .5em;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.3em .75em;font-size:.82rem;transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* bench */
+section{padding-block:48px}
+.sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.sechead p{color:var(--muted);max-width:60ch}
+.bench{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.pane{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);min-width:0}
+.chrome{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--sunk);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.75rem;color:var(--muted);min-width:0}
+.chrome .dots{display:flex;gap:5px;flex:none}
+.chrome .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.chrome .url{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* simulated theme */
+.site{padding:0 0 22px}
+.site-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--line)}
+.site-name{font-family:var(--display);font-weight:800;font-size:1.15rem}
+.site-name small{display:block;font-family:var(--body);font-weight:400;font-size:.75rem;color:var(--muted)}
+.site-body{padding:20px;display:grid;gap:18px}
+.site-body h3{font-size:1.25rem}
+.site-note{font-size:.92rem;color:var(--muted)}
+
+/* plugin front-end output (mirrors assets/css/bukas-hours.css) */
+.bukas-status{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.25em .6em;padding:.45em .9em;border:1px solid var(--line);border-radius:999px;line-height:1.3;font-size:.92rem;background:var(--surface)}
+.bukas-status .dot{width:.6em;height:.6em;border-radius:50%;background:var(--closed);flex:none}
+.bukas-status.is-open .dot{background:var(--open);animation:pulse 2s infinite}
+.bukas-status.is-closing-soon .dot{background:var(--soon)}
+.bukas-status.is-open .lbl{color:var(--open)} .bukas-status.is-closing-soon .lbl{color:var(--soon)} .bukas-status.is-closed .lbl{color:var(--closed)}
+.bukas-status .det{color:var(--muted)}
+.bukas-status.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.06)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--open) 55%,transparent)}70%{box-shadow:0 0 0 .5em transparent}100%{box-shadow:0 0 0 0 transparent}}
+.bukas-hours{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.94rem}
+.bukas-hours th,.bukas-hours td{padding:.5em .7em;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
+.bukas-hours td{text-align:right}
+.bukas-hours tr.is-today{background:var(--today)} .bukas-hours tr.is-today th,.bukas-hours tr.is-today td{font-weight:700}
+.bukas-hours .today{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--open);margin-left:.4em}
+.bukas-hours .cl{color:var(--muted)}
+.bukas-closures{list-style:none;margin:0;padding:0}
+.bukas-closures li{display:grid;grid-template-columns:auto 1fr auto;gap:.75em;padding:.5em 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.bukas-closures time{color:var(--muted);font-variant-numeric:tabular-nums}
+.bukas-closures .h{color:var(--closed)} .bukas-closures .h.sp{color:var(--soon)}
+
+/* simulated wp-admin */
+.wpbar{display:flex;align-items:center;gap:10px;background:var(--wp);color:var(--wp-ink);padding:7px 14px;font-size:.8rem}
+.wpbar b{font-family:var(--display)}
+.admin{padding:16px 18px 20px;display:grid;gap:18px;font-size:.92rem}
+.admin>*{min-width:0}
+.admin input[type=text],.texts input{width:100%}
+.week input[type=time]{width:100%;min-width:92px}
+.admin h3{font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.scroll{overflow-x:auto}
+.week{width:100%;border-collapse:collapse;min-width:430px}
+.week th,.week td{padding:5px 4px;text-align:left;border-bottom:1px solid var(--line);font-weight:400}
+.week thead th{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.week tbody th{font-weight:700;white-space:nowrap}
+.week tr.off input[type=time]{opacity:.3}
+.admin input[type=time],.admin input[type=date],.admin input[type=text],.admin input[type=number]{font:inherit;font-size:.86rem;padding:.3em .4em;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0;max-width:100%}
+.admin input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+.hol{display:grid;gap:8px}
+.holrow{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr) minmax(0,7em) minmax(0,7em) auto;gap:6px;align-items:center}
+.holrow .x{border:0;background:none;color:var(--closed);font-size:.82rem;padding:.2em .3em}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.texts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.texts label{display:grid;gap:3px;font-size:.78rem;color:var(--muted)}
+.saved{font-family:var(--mono);font-size:.75rem;color:var(--accent);opacity:0;transition:opacity .3s}
+.saved.on{opacity:1}
+
+/* code strip */
+.codegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sc{border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:8px;background:var(--surface);min-width:0}
+.sc code{font-size:.9rem;color:var(--accent);word-break:break-all}
+.sc p{font-size:.9rem;color:var(--muted)}
+.sc .btn{justify-self:start}
+pre.json{margin:0;background:var(--wp);color:var(--wp-ink);border-radius:var(--r);padding:16px;font-family:var(--mono);font-size:.78rem;line-height:1.5;overflow:auto;max-height:340px}
+.jsonhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:26px 0 10px;flex-wrap:wrap}
+
+/* about */
+.about{display:grid;grid-template-columns:1.1fr 1fr;gap:34px}
+.about dl{margin:0;display:grid;gap:18px}
+.about dt{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.about dd{margin:0;max-width:62ch}
+.about ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.install{background:var(--sunk);border-radius:14px;padding:20px;display:grid;gap:12px;align-self:start}
+.install ol{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.pitch{border-left:3px solid var(--accent);padding-left:14px}
+.repo{font-family:var(--mono);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:.6em 1.1em;border-radius:999px;font-size:.9rem;opacity:0;transition:.25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:900px){
+  .hero,.bench,.about{grid-template-columns:1fr}
+  .codegrid{grid-template-columns:1fr}
+  .hero{gap:24px}
+}
+@media (max-width:520px){
+  .wrap{padding-inline:16px}
+  .texts{grid-template-columns:1fr}
+  .holrow{grid-template-columns:1fr 1fr;}
+  .clock .chips{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:2px}
+  .chip{white-space:nowrap}
+  .clock .wrap{gap:8px}
+  .holrow input[type=text]{grid-column:1/-1}
+  .clock .now strong{font-size:1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap top">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="12" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M14 7v7l5 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="22" cy="6" r="4" fill="var(--open)"/></svg>
+    Bukas Hours
+  </div>
+  <div class="tags"><span class="tag">WordPress plugin</span><span class="tag">v1.0.0</span><span class="tag">GPL-2.0+</span></div>
+</div>
+
+<header class="wrap hero">
+  <div>
+    <p class="eyebrow">Showcase · WordPress plugin</p>
+    <h1>Is the shop <em>open</em> right now? Your website should know.</h1>
+    <p class="lede">Bukas Hours adds a live open/closed badge, noon-break schedules, holiday closures and Google-ready opening-hours schema to any WordPress site. It stays accurate even on fully cached pages.</p>
+    <div class="ctas">
+      <a class="btn primary" href="#demo">Try the live demo</a>
+      <a class="btn" href="#about">About this project</a>
+    </div>
+    <p class="gloss"><b>bukas</b> (Filipino) · open; also "tomorrow". <b>sarado</b> · closed.</p>
+  </div>
+  <div class="door" aria-live="polite">
+    <span class="nail" aria-hidden="true"></span>
+    <svg class="strings" viewBox="0 0 200 60" aria-hidden="true"><path d="M100 4 L24 58 M100 4 L176 58"/></svg>
+    <div class="signbox">
+      <div class="sign" id="sign">
+        <div class="face front"><div><div class="big">BUKAS</div><div class="small" id="signFront">Pasok po kayo</div></div></div>
+        <div class="face back"><div><div class="big">SARADO</div><div class="small" id="signBack">Balik po bukas</div></div></div>
+      </div>
+    </div>
+    <p class="signcap">The sign follows the demo clock below. Drag the time slider and watch it flip.</p>
+  </div>
+</header>
+
+<div class="clock" role="region" aria-label="Demo clock">
+  <div class="wrap">
+    <div class="now"><span class="eyebrow">Demo time · Asia/Manila</span><strong id="clockLabel">—</strong></div>
+    <div class="ctrls">
+      
+      <input type="date" id="dateIn" aria-label="Demo date">
+      <input type="range" id="timeIn" min="0" max="1439" step="5" aria-label="Demo time of day">
+      <div class="chips" id="presets">
+        <button class="chip" data-p="live" aria-pressed="true">Live now</button>
+        <button class="chip" data-p="mon9">Mon 9:00</button>
+        <button class="chip" data-p="noon">Noon break</button>
+        <button class="chip" data-p="soon">Mon 4:45 PM</button>
+        <button class="chip" data-p="sun">Sunday</button>
+        <button class="chip" data-p="hol">Bonifacio Day</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+<section id="demo" class="wrap">
+  <div class="sechead">
+    <div><p class="eyebrow">Interactive preview</p><h2>Edit the hours. Watch the site update.</h2></div>
+    <p>Left is a sample bakery's website using the shortcodes. Right is the plugin's settings screen. Changes save to your browser only.</p>
+  </div>
+  <div class="bench">
+    <div class="pane" aria-label="Simulated website front end">
+      <div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url">panaderialunhaw.example/contact</span></div>
+      <div class="site">
+        <div class="site-hd">
+          <div class="site-name"><span id="siteName">Panaderia Lunhaw</span><small>Pandesal · ensaymada · cakes · Valencia City</small></div>
+          <div id="fBadge"></div>
+        </div>
+        <div class="site-body">
+          <div><h3>Visit us</h3><p class="site-note">Sayre Hwy, Poblacion, Valencia City, Bukidnon (sample address). Fresh pandesal from 6:00 AM.</p></div>
+          <div><p class="eyebrow" style="margin-bottom:6px">[bukas_hours]</p><table class="bukas-hours" id="fTable"></table></div>
+          <div><p class="eyebrow" style="margin-bottom:6px">[bukas_closures limit="5"]</p><ul class="bukas-closures" id="fClos"></ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane" aria-label="Simulated wp-admin settings">
+      <div class="wpbar"><b>W</b><span>Dashboard › Settings › <b>Bukas Hours</b></span></div>
+      <form class="admin" id="admin" onsubmit="return false">
+        <div>
+          <h3>Business</h3>
+          <div class="row" style="margin-top:8px">
+            <label for="aName" class="eyebrow">Name</label>
+            <input type="text" id="aName" style="flex:1">
+            <label for="aSoon" class="eyebrow">Closing soon</label>
+            <input type="number" id="aSoon" min="0" max="180" style="width:5em"><span class="site-note">min</span>
+          </div>
+        </div>
+        <div>
+          <h3>Weekly hours <button type="button" class="btn small" id="copyMon">Copy Monday to Tue–Fri</button></h3>
+          <div class="scroll" style="margin-top:8px">
+            <table class="week">
+              <thead><tr><th>Day</th><th>Closed</th><th>Opens</th><th>Closes</th><th>Reopens</th><th>Closes</th></tr></thead>
+              <tbody id="weekBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h3>Holidays &amp; special hours</h3>
+          <p class="site-note" style="margin:4px 0 8px">Blank times mean closed all day.</p>
+          <div class="hol" id="holBody"></div>
+          <div class="row" style="margin-top:10px">
+            <button type="button" class="btn small" id="addHol">Add date</button>
+            <input type="number" id="phYear" min="2024" max="2100" aria-label="Year for PH holidays" style="width:5.5em">
+            <button type="button" class="btn small" id="addPh">Add PH regular holidays</button>
+          </div>
+        </div>
+        <div>
+          <h3>Badge text</h3>
+          <div class="texts" style="margin-top:8px">
+            <label for="tOpen">Open<input type="text" id="tOpen"></label>
+            <label for="tSoon">Closing soon<input type="text" id="tSoon"></label>
+            <label for="tClosed">Closed<input type="text" id="tClosed"></label>
+          </div>
+          <div class="row" style="margin-top:8px"><button type="button" class="chip" id="fil">Use Filipino labels</button><button type="button" class="chip" id="reset">Reset demo</button></div>
+        </div>
+        <div class="row"><button type="button" class="btn primary small" id="save">Save hours</button><span class="saved" id="savedMsg">Settings saved.</span></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="use">
+  <div class="sechead"><div><p class="eyebrow">Drop-in output</p><h2>Three shortcodes and a block</h2></div><p>Place the badge in a header, the table on a Contact page, the holiday list in a footer. Assets load only where they are used.</p></div>
+  <div class="codegrid">
+    <div class="sc"><code>[bukas_status]</code><p>Live badge with "Closes at…" or "Opens tomorrow at…". Recalculated in the browser every minute, so caching never freezes it.</p><button class="btn small" data-copy="[bukas_status]">Copy</button></div>
+    <div class="sc"><code>[bukas_hours]</code><p>Weekly table with today highlighted. Honors the site's 12- or 24-hour time format.</p><button class="btn small" data-copy="[bukas_hours]">Copy</button></div>
+    <div class="sc"><code>[bukas_closures limit="5"]</code><p>Upcoming holidays and special hours, soonest first. Past dates drop off automatically.</p><button class="btn small" data-copy='[bukas_closures limit="5"]'>Copy</button></div>
+  </div>
+  <div class="jsonhead"><h3>LocalBusiness JSON-LD printed on the front page</h3><button class="btn small" id="copyJson">Copy JSON-LD</button></div>
+  <pre class="json" id="json" tabindex="0" aria-label="Generated structured data"></pre>
+</section>
+
+<section class="wrap" id="about">
+  <div class="sechead"><div><p class="eyebrow">About this project</p><h2>Why Bukas Hours exists</h2></div></div>
+  <div class="about">
+    <dl>
+      <div><dt>Problem</dt><dd>Customers check a website before travelling to a shop, clinic or municipal office. Most small-business sites list static hours that ignore the noon break, holidays and caching, so visitors arrive to a locked door.</dd></div>
+      <div><dt>Who it's for</dt><dd>Philippine SMEs (bakeries, pharmacies, repair shops, cafés), clinics, cooperatives, LGU offices and schools running WordPress, and the freelancers who build their sites.</dd></div>
+      <div><dt>Features</dt><dd><ul>
+        <li>Live Open / Closing soon / Closed badge with next-change detail</li>
+        <li>Cache-safe browser recalculation using the business timezone</li>
+        <li>Two shifts per day for noon breaks</li>
+        <li>Holiday closures and special hours, plus a PH fixed-date holiday helper</li>
+        <li>Shortcodes and a no-build dynamic block</li>
+        <li>LocalBusiness schema with special opening hours</li>
+        <li>Custom badge text in any language; translation-ready</li>
+      </ul></dd></div>
+      <div><dt>Tech stack</dt><dd>PHP 7.4+ (DateTimeImmutable), WordPress Settings, Shortcode and Block APIs, vanilla JS with Intl.DateTimeFormat, plain CSS. No jQuery, no build step, no external requests.</dd></div>
+      <div class="pitch"><dt>Client pitch</dt><dd>"Your site will tell customers if you're open right now, including lunch break and holidays, and Google gets your exact hours." Offer it as a ₱1,500–₱3,000 add-on to any small-business WordPress build, or bundle setup plus a yearly holiday update as a maintenance retainer. A Pro version could add multiple branches and a chatbot-ready status API.</dd></div>
+    </dl>
+    <div class="install">
+      <h3>Install in five minutes</h3>
+      <ol>
+        <li>Download <code>bukas-hours.zip</code>.</li>
+        <li>wp-admin → Plugins → Add New → Upload Plugin → Install → Activate.</li>
+        <li>Settings → Bukas Hours: set timezone, hours and holidays.</li>
+        <li>Add <code>[bukas_status]</code> or the Bukas Hours block.</li>
+        <li>Purge your page cache once.</li>
+      </ol>
+      <p class="site-note">Local testing: LocalWP, or <code>npx @wordpress/env start</code> (config included). Full steps live in <code>docs/DEPLOYMENT.md</code>.</p>
+      <div class="repo"><span>github.com/&lt;you&gt;/<b>bukas-hours</b></span><button class="btn small" data-copy="bukas-hours">Copy name</button></div>
+      <p class="site-note">Sample business, address and holidays are illustrative. Always confirm the year's official holiday proclamation.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>Bukas Hours · built by Efraim Ray, Valencia City, Bukidnon</span><a href="https://www.efraimray.com/" target="_blank" rel="noopener">efraimray.com</a></div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var DAYS=['mon','tue','wed','thu','fri','sat','sun'];
+var NAMES={mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
+var KEY='bukas-demo-v1';
+var $=function(id){return document.getElementById(id)};
+
+function defaults(){
+  var wk=function(){return {closed:0,open:'06:00',close:'12:00',open2:'13:00',close2:'17:00'}};
+  var y=manilaNow().getUTCFullYear();
+  return {name:'Panaderia Lunhaw',soon:30,open_text:'Open now',soon_text:'Closing soon',closed_text:'Closed',
+    days:{mon:wk(),tue:wk(),wed:wk(),thu:wk(),fri:wk(),sat:{closed:0,open:'06:00',close:'14:00',open2:'',close2:''},sun:{closed:1,open:'',close:'',open2:'',close2:''}},
+    closures:[{date:y+'-11-30',label:'Bonifacio Day',open:'',close:''},{date:y+'-12-24',label:'Christmas Eve (half day)',open:'06:00',close:'12:00'},{date:y+'-12-25',label:'Christmas Day',open:'',close:''}]};
+}
+
+/* "Wall clock" dates: we store Manila local time in the UTC fields of a Date. */
+function manilaNow(){
+  var p={};new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});
+  return new Date(Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute));
+}
+function ymd(d){return d.toISOString().slice(0,10)}
+function dayStart(d){return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()))}
+function addDays(d,n){return new Date(d.getTime()+n*864e5)}
+function dayKey(d){return DAYS[(d.getUTCDay()+6)%7]}
+function hm(s){var a=s.split(':');return (+a[0])*60+(+a[1])}
+function fmtTime(min){var h=Math.floor(min/60),m=min%60,ap=h<12?'AM':'PM';h=h%12||12;return h+':'+(m<10?'0':'')+m+' '+ap}
+function fmtT(s){return fmtTime(hm(s))}
+
+var S, now, live=true;
+function load(){try{var v=JSON.parse(localStorage.getItem(KEY));if(v&&v.days)return v}catch(e){}return defaults()}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* --- Same rules as Bukas_Hours_Schedule (PHP) --- */
+function closureFor(d){var k=ymd(d);for(var i=0;i<S.closures.length;i++)if(S.closures[i].date===k)return S.closures[i];return null}
+function shiftsFor(d){
+  var c=closureFor(d);
+  if(c){return (c.open&&c.close&&c.close>c.open)?[[c.open,c.close]]:[]}
+  var day=S.days[dayKey(d)];if(!day||day.closed)return[];
+  var out=[];[['open','close'],['open2','close2']].forEach(function(f){if(day[f[0]]&&day[f[1]]&&day[f[1]]>day[f[0]])out.push([day[f[0]],day[f[1]]])});
+  return out;
+}
+function rangesFor(d){var base=dayStart(d).getTime();return shiftsFor(d).map(function(s){return [base+hm(s[0])*6e4,base+hm(s[1])*6e4]})}
+function status(n){
+  var t=n.getTime(),soon=(+S.soon||0)*6e4,r=rangesFor(n);
+  for(var i=0;i<r.length;i++)if(t>=r[i][0]&&t<r[i][1])return{state:(r[i][1]-t<=soon)?'closing_soon':'open',next:new Date(r[i][1])};
+  var base=dayStart(n);
+  for(var k=0;k<14;k++){var rr=rangesFor(addDays(base,k));for(var j=0;j<rr.length;j++)if(rr[j][0]>t)return{state:'closed',next:new Date(rr[j][0])}}
+  return{state:'closed',next:null};
+}
+function detail(st,n){
+  if(!st.next)return 'No upcoming hours scheduled';
+  var tm=fmtTime(st.next.getUTCHours()*60+st.next.getUTCMinutes());
+  if(st.state!=='closed')return 'Closes at '+tm;
+  if(ymd(st.next)===ymd(n))return 'Opens at '+tm;
+  if(ymd(st.next)===ymd(addDays(n,1)))return 'Opens tomorrow at '+tm;
+  return 'Opens '+NAMES[dayKey(st.next)]+' at '+tm;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+/* --- Front end --- */
+var lastState=null;
+function renderFront(){
+  var st=status(now),lbl={open:S.open_text,closing_soon:S.soon_text,closed:S.closed_text}[st.state];
+  var cls='is-'+st.state.replace('_','-');
+  $('fBadge').innerHTML='<p class="bukas-status '+cls+(lastState&&lastState!==st.state?' bump':'')+'" role="status"><span class="dot" aria-hidden="true"></span><strong class="lbl">'+esc(lbl)+'</strong> <span class="det">'+esc(detail(st,now))+'</span></p>';
+  var sign=$('sign');sign.classList.toggle('flip',st.state==='closed');
+  $('signFront').textContent=st.state==='closing_soon'?'Malapit nang magsara':'Pasok po kayo';
+  $('signBack').textContent=st.next?detail(st,now).replace('Opens','Bukas'):'Sarado';
+  lastState=st.state;
+  $('siteName').textContent=S.name||'Your business';
+  var today=dayKey(now),rows='';
+  DAYS.forEach(function(k){
+    var d=S.days[k],t=[];
+    if(!d.closed)[['open','close'],['open2','close2']].forEach(function(f){if(d[f[0]]&&d[f[1]])t.push(fmtT(d[f[0]])+' – '+fmtT(d[f[1]]))});
+    var isT=k===today;
+    rows+='<tr'+(isT?' class="is-today" aria-current="date"':'')+'><th scope="row">'+NAMES[k]+(isT?'<span class="today">Today</span>':'')+'</th><td>'+(t.length?esc(t.join(', ')):'<span class="cl">Closed</span>')+'</td></tr>';
+  });
+  $('fTable').innerHTML='<tbody>'+rows+'</tbody>';
+  var tk=ymd(now),up=S.closures.filter(function(c){return c.date&&c.date>=tk}).sort(function(a,b){return a.date<b.date?-1:1}).slice(0,5);
+  $('fClos').innerHTML=up.length?up.map(function(c){
+    var d=new Date(c.date+'T00:00:00Z'),sp=c.open&&c.close;
+    return '<li><time datetime="'+c.date+'">'+d.toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric',year:'numeric'})+'</time><span>'+esc(c.label||'Closed')+'</span><span class="h'+(sp?' sp':'')+'">'+(sp?fmtT(c.open)+' – '+fmtT(c.close):'Closed')+'</span></li>'}).join('')
+    :'<li><span></span><span class="cl">No upcoming holiday closures.</span><span></span></li>';
+  renderJson();
+}
+
+function renderJson(){
+  var spec=[];DAYS.forEach(function(k){var d=S.days[k];if(d.closed)return;[['open','close'],['open2','close2']].forEach(function(f){if(d[f[0]]&&d[f[1]])spec.push({'@type':'OpeningHoursSpecification',dayOfWeek:'https://schema.org/'+NAMES[k],opens:d[f[0]],closes:d[f[1]]})})});
+  var tk=ymd(now),special=S.closures.filter(function(c){return c.date>=tk}).map(function(c){var h=c.open&&c.close;return{'@type':'OpeningHoursSpecification',validFrom:c.date,validThrough:c.date,opens:h?c.open:'00:00',closes:h?c.close:'00:00'}});
+  var data={'@context':'https://schema.org','@type':'Store',name:S.name,url:'https://panaderialunhaw.example/',openingHoursSpecification:spec};
+  if(special.length)data.specialOpeningHoursSpecification=special;
+  $('json').textContent='<script type="application/ld+json">\n'+JSON.stringify(data,null,2)+'\n</'+'script>';
+}
+
+/* --- Admin --- */
+function renderAdmin(){
+  $('aName').value=S.name;$('aSoon').value=S.soon;
+  $('tOpen').value=S.open_text;$('tSoon').value=S.soon_text;$('tClosed').value=S.closed_text;
+  var h='';
+  DAYS.forEach(function(k){var d=S.days[k];
+    h+='<tr class="'+(d.closed?'off':'')+'" data-day="'+k+'"><th scope="row">'+NAMES[k].slice(0,3)+'</th><td><input type="checkbox" id="c-'+k+'" data-f="closed" '+(d.closed?'checked':'')+' aria-label="Closed on '+NAMES[k]+'"></td>'+
+    ['open','close','open2','close2'].map(function(f){return '<td><input type="time" id="'+f+'-'+k+'" data-f="'+f+'" value="'+d[f]+'" aria-label="'+NAMES[k]+' '+f+'"></td>'}).join('')+'</tr>';
+  });
+  $('weekBody').innerHTML=h;
+  renderHol();
+}
+function renderHol(){
+  $('holBody').innerHTML=S.closures.map(function(c,i){
+    return '<div class="holrow" data-i="'+i+'"><input type="date" id="hd-'+i+'" data-f="date" value="'+esc(c.date)+'" aria-label="Date"><input type="text" id="hl-'+i+'" data-f="label" value="'+esc(c.label)+'" placeholder="Label" aria-label="Label"><input type="time" id="ho-'+i+'" data-f="open" value="'+esc(c.open)+'" aria-label="Special opening time"><input type="time" id="hc-'+i+'" data-f="close" value="'+esc(c.close)+'" aria-label="Special closing time"><button type="button" class="x" aria-label="Remove '+esc(c.label||c.date)+'">Remove</button></div>';
+  }).join('')||'<p class="site-note">No dates yet.</p>';
+}
+function changed(){persist();renderFront()}
+
+$('weekBody').addEventListener('input',function(e){
+  var tr=e.target.closest('tr');if(!tr)return;var k=tr.dataset.day,f=e.target.dataset.f;
+  if(f==='closed'){S.days[k].closed=e.target.checked?1:0;tr.classList.toggle('off',e.target.checked)}else S.days[k][f]=e.target.value;
+  changed();
+});
+$('holBody').addEventListener('input',function(e){var r=e.target.closest('.holrow');if(!r)return;S.closures[+r.dataset.i][e.target.dataset.f]=e.target.value;changed()});
+$('holBody').addEventListener('click',function(e){if(!e.target.classList.contains('x'))return;S.closures.splice(+e.target.closest('.holrow').dataset.i,1);renderHol();changed();toast('Date removed')});
+$('addHol').addEventListener('click',function(){S.closures.push({date:ymd(now),label:'',open:'',close:''});renderHol();changed();var ins=$('holBody').querySelectorAll('input[type=text]');ins[ins.length-1].focus()});
+function lastMonAug(y){var d=new Date(Date.UTC(y,7,31));while(d.getUTCDay()!==1)d=addDays(d,-1);return ymd(d)}
+$('addPh').addEventListener('click',function(){
+  var y=+$('phYear').value;if(!y)return;
+  var list=[[y+'-01-01',"New Year's Day"],[y+'-04-09','Araw ng Kagitingan'],[y+'-05-01','Labor Day'],[y+'-06-12','Independence Day'],[lastMonAug(y),'National Heroes Day'],[y+'-11-30','Bonifacio Day'],[y+'-12-25','Christmas Day'],[y+'-12-30','Rizal Day']];
+  var have=S.closures.map(function(c){return c.date}),n=0;
+  list.forEach(function(h){if(have.indexOf(h[0])<0){S.closures.push({date:h[0],label:h[1],open:'',close:''});n++}});
+  S.closures.sort(function(a,b){return a.date<b.date?-1:1});renderHol();changed();toast(n?('Added '+n+' holidays for '+y):'All '+y+' regular holidays are already listed');
+});
+$('copyMon').addEventListener('click',function(){['tue','wed','thu','fri'].forEach(function(k){S.days[k]=Object.assign({},S.days.mon)});renderAdmin();changed();toast('Copied Monday to Tue–Fri')});
+[['aName','name'],['aSoon','soon'],['tOpen','open_text'],['tSoon','soon_text'],['tClosed','closed_text']].forEach(function(p){$(p[0]).addEventListener('input',function(e){S[p[1]]=e.target.value;changed()})});
+$('fil').addEventListener('click',function(){S.open_text='Bukas na!';S.soon_text='Malapit nang magsara';S.closed_text='Sarado';renderAdmin();changed();toast('Filipino labels applied')});
+$('reset').addEventListener('click',function(){S=defaults();renderAdmin();changed();toast('Demo reset')});
+$('save').addEventListener('click',function(){persist();var m=$('savedMsg');m.classList.add('on');setTimeout(function(){m.classList.remove('on')},1800)});
+
+/* --- Clock --- */
+function setNow(d,isLive){now=d;live=!!isLive;
+  $('dateIn').value=ymd(now);$('timeIn').value=now.getUTCHours()*60+now.getUTCMinutes();
+  $('clockLabel').textContent=now.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'})+' · '+fmtTime(now.getUTCHours()*60+now.getUTCMinutes());
+  renderFront();
+}
+function press(p){document.querySelectorAll('#presets .chip').forEach(function(c){c.setAttribute('aria-pressed',String(c.dataset.p===p))})}
+function nextDow(dow,h,m){var b=dayStart(manilaNow());while(b.getUTCDay()!==dow)b=addDays(b,1);return new Date(b.getTime()+(h*60+m)*6e4)}
+$('presets').addEventListener('click',function(e){var p=e.target.dataset&&e.target.dataset.p;if(!p)return;press(p);
+  var y=manilaNow().getUTCFullYear();
+  var map={live:function(){return manilaNow()},mon9:function(){return nextDow(1,9,0)},noon:function(){return nextDow(1,12,20)},soon:function(){return nextDow(1,16,45)},sun:function(){return nextDow(0,10,0)},hol:function(){var d=new Date(Date.UTC(y,10,30,10,0));if(d<dayStart(manilaNow()))d=new Date(Date.UTC(y+1,10,30,10,0));return d}};
+  setNow(map[p](),p==='live');
+});
+$('timeIn').addEventListener('input',function(e){press('');var v=+e.target.value;setNow(new Date(dayStart(now).getTime()+v*6e4))});
+$('dateIn').addEventListener('change',function(e){if(!e.target.value)return;press('');var m=now.getUTCHours()*60+now.getUTCMinutes();setNow(new Date(new Date(e.target.value+'T00:00:00Z').getTime()+m*6e4))});
+setInterval(function(){if(live)setNow(manilaNow(),true)},30000);
+
+/* --- Copy + toast --- */
+var tt;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},1800)}
+function copy(text,label){
+  try{navigator.clipboard.writeText(text).then(function(){toast(label+' copied')},function(){toast('Select the text and copy it manually')})}catch(e){toast('Select the text and copy it manually')}
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(b)copy(b.dataset.copy,b.dataset.copy)});
+$('copyJson').addEventListener('click',function(){copy($('json').textContent,'JSON-LD')});
+
+/* --- Boot --- */
+S=load();$('phYear').value=manilaNow().getUTCFullYear();
+renderAdmin();setNow(manilaNow(),true);
+})();
+</script>
+</body>
+</html>

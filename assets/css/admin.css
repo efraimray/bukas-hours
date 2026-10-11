@@ -1,0 +1,14 @@
+/* Bukas Hours — settings screen. */
+.bukas-admin__preview {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	padding: 4px 16px 12px;
+	max-width: 720px;
+	margin: 16px 0;
+}
+.bukas-week { max-width: 900px; }
+.bukas-week tr.is-closed input[type="time"] { opacity: 0.35; }
+.bukas-closures-table { max-width: 900px; }
+.bukas-closure-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bukas-closure-actions input[type="number"] { width: 6em; }
+.bukas-texts label { display: inline-block; margin: 0 12px 6px 0; }
